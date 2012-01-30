@@ -61,6 +61,14 @@ class subversion_edge($repo, $version, $user = "maestro", $home = "/home/maestro
     environment => "JAVA_HOME=/usr/lib/jvm/jre-1.6.0-openjdk.x86_64",
     command => "sudo -E /usr/local/csvn/bin/csvn install",
     require => Package[$jdk]
-  }  
+  } 
+  
+  service { "csvn":
+    enable => true,
+    ensure => running,
+    hasrestart => true,
+    hasstatus => true,
+    require => Exec["install-subversion-edge"]
+  } 
   
 }
