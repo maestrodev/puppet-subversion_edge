@@ -1,0 +1,1 @@
+export JAVA_HOME=/usr/lib/jvm/jre-1.6.0-openjdk.x86_64
