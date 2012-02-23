@@ -16,14 +16,15 @@ class subversion_edge($repo, $version, $user = "maestro", $home = "/home/maestro
       ensure     => present,
       home       => $home,
       managehome => false,
+    } ->
+    group { $group:
+      ensure  => present,
+    } ->
+    exec { "sudo":
+      command => "echo 'maestro         ALL=(ALL)               NOPASSWD: ALL' >> /etc/sudoers",
     }
-  } ->
-  group { $group:
-    ensure  => present,
-  } ->
-  exec { "sudo":
-    command => "echo 'maestro         ALL=(ALL)               NOPASSWD: ALL' >> /etc/sudoers",
   }
+
   wget::authfetch { "download-subversion-edge":
     user => $repo['username'],
     password => $repo['password'],
