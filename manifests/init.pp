@@ -11,11 +11,12 @@ class subversion_edge($repo, $version, $user = "maestro", $home = "/home/maestro
     package { $jdk: ensure => installed }
   }
 
-  
-  user { $user:
-    ensure     => present,
-    home       => $home,
-    managehome => false,
+  if ! defined (User[$user]) {
+    user { $user:
+      ensure     => present,
+      home       => $home,
+      managehome => false,
+    }
   } ->
   group { $group:
     ensure  => present,
