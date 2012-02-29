@@ -1,4 +1,9 @@
-class subversion_edge($repo, $version, $user = "maestro", $home = "/home/maestro", $group = "maestro", $jdk = "java-1.6.0-openjdk") {
+class subversion_edge($repo, 
+                      $version, 
+                      $user = "maestro", 
+                      $home = "/home/maestro", 
+                      $group = "maestro", 
+                      $jdk = "java-1.6.0-openjdk") {
   include wget
   
   $download_url = "https://repo.maestrodev.com/archiva/repository/3rdparty/com/collabnet/subversion-edge/${version}" #https://repo.maestrodev.com/archiva/repository/3rdparty/com/collabnet/subversion-edge/2.2.0-maestrodev/subversion-edge-2.2.0-maestrodev-linux-x86_64.tar.gz
