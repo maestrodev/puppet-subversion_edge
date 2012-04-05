@@ -30,6 +30,16 @@ class subversion_edge($repo,
     }
   }
 
+  if ! defined (File["/etc/profile.d/set_java_home.sh"]) {
+    file { "/etc/profile.d/set_java_home.sh":
+        ensure => present,
+        source => "puppet:///modules/subversion_edge/set_java_home.sh",
+        mode => 755
+    } ->
+    exec { "/bin/sh /etc/profile": 
+    }
+  }
+
   wget::authfetch { "download-subversion-edge":
     user => $repo['username'],
     password => $repo['password'],
@@ -50,17 +60,10 @@ class subversion_edge($repo,
     mode => 775,
     recurse => true
   } ->
-  file { "/etc/profile.d/set_java_home.sh":
-      ensure => present,
-      source => "puppet:///modules/subversion_edge/set_java_home.sh",
-      mode => 755
-  } ->
   file { $home:
     ensure => directory,
     mode => 0700,
   } ->
-  exec { "/bin/sh /etc/profile": 
-    } ->
   exec { "install-subversion-edge":
     logoutput => true,
     user => $user,
@@ -68,7 +71,7 @@ class subversion_edge($repo,
     environment => "JAVA_HOME=/usr/lib/jvm/jre-1.6.0-openjdk",
     command => "sudo -E /usr/local/csvn/bin/csvn install",
     creates => "/etc/init.d/csvn",
-    require => Package[$jdk]
+    require => [Package[$jdk],File['/etc/profile.d/set_java_home.sh']]
   } 
   
   service { "csvn":
