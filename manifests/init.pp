@@ -72,8 +72,21 @@ class subversion_edge($repo,
     command => "sudo -E /usr/local/csvn/bin/csvn install",
     creates => "/etc/init.d/csvn",
     require => [Package[$jdk],File['/etc/profile.d/set_java_home.sh']]
-  } 
+  }
+   exec { 'csvn-run-as-user':
+    command => "sed -i 's/#RUN_AS_USER=$/RUN_AS_USER=${user}/' /usr/local/csvn/data/conf/csvn.conf",
+    unless  => "grep 'RUN_AS_USER=${user}' /usr/local/csvn/data/conf/csvn.conf",
+    before  => Service['csvn'],
+    require => Exec["install-subversion-edge"],
+  }
   
+  exec { 'csvn-run-as-user-csvn-httpd':
+    command => "sed -i 's/#RUN_AS_USER=$/RUN_AS_USER=${user}/' /usr/local/csvn/bin/csvn-httpd",
+    unless  => "grep 'RUN_AS_USER=${user}' /usr/local/csvn/bin/csvn-httpd",
+    before  => Service['csvn'],
+    require => Exec["install-subversion-edge"],
+  }
+ 
   service { "csvn":
     enable => true,
     ensure => running,
